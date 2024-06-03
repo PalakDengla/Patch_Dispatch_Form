@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Download PDF</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 1.5em;
+        }
+
+        input[type="text"] {
+            font-size: 1.5em;
+            padding: 10px;
+            margin-bottom: 20px;
+            width: 300px;
+            text-align: center;
+        }
+
+        button {
+            font-size: 1.5em;
+            color: white;
+            background-color: red;
+            border: none;
+            padding: 15px 30px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: darkred;
+        }
+    </style>
+    <script>
+        function downloadPDF() {
+            const formId = document.getElementById('formId').value;
+            const url = `/generateReport?formId=${formId}`;
+
+            fetch(url)
+                .then(response => response.blob())
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = 'report.pdf';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
+</head>
+<body>
+<h1>Download PDF Report</h1>
+<label for="formId">Form ID:</label>
+<input type="text" id="formId" name="formId" required>
+<button onclick="downloadPDF()">Download PDF</button>
+</body>
+</html>
